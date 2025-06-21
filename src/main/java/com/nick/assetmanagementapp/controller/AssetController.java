@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/assets")
-@CrossOrigin
 public class AssetController {
 
     private final AssetService assetService;
