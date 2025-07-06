@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.nick.assetmanagementapp.ui.MainController" spacing="10" alignment="CENTER" prefWidth="400" prefHeight="300">
+    <children>
+        <Button text="Load Assets" onAction="#loadAssets" />
+        <TextArea fx:id="outputArea" prefRowCount="10" prefColumnCount="30" />
+    </children>
+</VBox>
