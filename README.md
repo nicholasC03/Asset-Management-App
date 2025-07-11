@@ -42,3 +42,14 @@ Clone the repo and start the app:
 git clone https://github.com/nicholasC03/asset-management-app.git
 cd asset-management-app
 ./mvnw spring-boot:run
+```
+
+### Build Windows Executable
+
+Run the following command to create a `.exe` launcher using Launch4j:
+
+```bash
+./mvnw package
+```
+
+
