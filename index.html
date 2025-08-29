@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Management App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-folder-open"></i> Asset Management</h1>
+            <div class="user-info" id="userInfo" style="display: none;">
+                <span id="currentUser"></span>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <!-- Login/Register Form -->
+        <div id="authSection" class="auth-section">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="showTab('login')">Login</button>
+                    <button class="tab-btn" onclick="showTab('register')">Register</button>
+                </div>
+                
+                <!-- Login Form -->
+                <div id="loginTab" class="auth-tab active">
+                    <form id="loginForm" onsubmit="login(event)">
+                        <div class="form-group">
+                            <label for="loginUsername">Username</label>
+                            <input type="text" id="loginUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+
+                <!-- Register Form -->
+                <div id="registerTab" class="auth-tab">
+                    <form id="registerForm" onsubmit="register(event)">
+                        <div class="form-group">
+                            <label for="registerUsername">Username</label>
+                            <input type="text" id="registerUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email</label>
+                            <input type="email" id="registerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password</label>
+                            <input type="password" id="registerPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App Section -->
+        <div id="appSection" class="app-section" style="display: none;">
+            <!-- Dashboard -->
+            <div class="dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-file"></i>
+                        <h3 id="totalAssets">0</h3>
+                        <p>Total Assets</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-dollar-sign"></i>
+                        <h3 id="totalSize">$0.00</h3>
+                        <p>Total Value</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-calendar"></i>
+                        <h3 id="lastUpdated">-</h3>
+                        <p>Last Updated</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Asset Management -->
+            <div class="asset-management">
+                <div class="section-header">
+                    <h2>My Assets</h2>
+                    <button onclick="showAddAssetModal()" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Asset
+                    </button>
+                </div>
+
+                <!-- Asset Filters -->
+                <div class="filters">
+                    <input type="text" id="searchAssets" placeholder="Search assets..." onkeyup="filterAssets()">
+                    <select id="typeFilter" onchange="filterAssets()">
+                        <option value="">All Types</option>
+                        <option value="furniture">Furniture</option>
+                        <option value="electronic">Electronic</option>
+                        <option value="utility">Utility</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Assets Grid -->
+                <div id="assetsGrid" class="assets-grid">
+                    <!-- Assets will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Asset Modal -->
+        <div id="addAssetModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add New Asset</h3>
+                    <span class="close" onclick="closeAddAssetModal()">&times;</span>
+                </div>
+                <form id="addAssetForm" onsubmit="addAsset(event)">
+                    <div class="form-group">
+                        <label for="assetName">Asset Name</label>
+                        <input type="text" id="assetName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="assetDescription">Description</label>
+                        <textarea id="assetDescription" rows="3"></textarea>
+                    </div>
+                    <!-- Manual Entry Section -->
+                    <div id="manualEntrySection">
+                        <div class="form-group">
+                            <label for="assetType">Type</label>
+                            <select id="assetType" onchange="toggleCustomType()" required>
+                                <option value="">Select Type</option>
+                                <option value="furniture">Furniture</option>
+                                <option value="electronic">Electronic</option>
+                                <option value="utility">Utility</option>
+                                <option value="other">Add new type</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="customTypeGroup" style="display: none;">
+                            <label for="customType">Custom Type</label>
+                            <input type="text" id="customType" placeholder="Enter custom type" maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="yearPurchased">Year Purchased</label>
+                            <input type="number" id="yearPurchased" placeholder="Enter year purchased (e.g., 2023)" min="1900" max="2030" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="purchasePrice">Price at Purchase</label>
+                            <input type="text" id="purchasePrice" placeholder="Enter purchase price" pattern="[0-9]*\.?[0-9]+" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="yearSold">Year Sold</label>
+                            <input type="number" id="yearSold" placeholder="Enter year sold (if applicable)" min="1900" max="2030">
+                        </div>
+                        <div class="form-group">
+                            <label for="soldPrice">Price Sold</label>
+                            <input type="text" id="soldPrice" placeholder="Enter sold price (if applicable)" pattern="[0-9]*\.?[0-9]+">
+                        </div>
+                        <div class="form-group">
+                            <label for="quality">Quality</label>
+                            <select id="quality" required>
+                                <option value="">Select Quality</option>
+                                <option value="excellent">Excellent</option>
+                                <option value="good">Good</option>
+                                <option value="decent">Decent</option>
+                                <option value="poor">Poor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" onclick="closeAddAssetModal()" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Asset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Asset Details Modal -->
+        <div id="assetDetailsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="assetDetailsTitle">Asset Details</h3>
+                    <span class="close" onclick="closeAssetDetailsModal()">&times;</span>
+                </div>
+                <div id="assetDetailsContent">
+                    <!-- Asset details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
