@@ -378,7 +378,9 @@ class AssetManager {
 
     // Modal Methods
     showAddAssetModal() {
-        document.getElementById('addAssetModal').style.display = 'block';
+        const modal = document.getElementById('addAssetModal');
+        modal.style.display = 'block';
+        this.optimizeModalPosition(modal);
     }
 
     closeAddAssetModal() {
@@ -390,6 +392,23 @@ class AssetManager {
 
     closeAssetDetailsModal() {
         document.getElementById('assetDetailsModal').style.display = 'none';
+    }
+
+    optimizeModalPosition(modal) {
+        const modalContent = modal.querySelector('.modal-content');
+        const windowHeight = window.innerHeight;
+        const modalHeight = modalContent.offsetHeight;
+        
+        // Ensure modal doesn't exceed viewport height
+        if (modalHeight > windowHeight * 0.9) {
+            modalContent.style.maxHeight = '90vh';
+            modalContent.style.overflowY = 'auto';
+        }
+        
+        // Center modal vertically if it's smaller than viewport
+        if (modalHeight < windowHeight * 0.8) {
+            modalContent.style.marginTop = '5vh';
+        }
     }
 
     // Tab Methods
@@ -417,6 +436,14 @@ class AssetManager {
                 this.closeAssetDetailsModal();
             }
         };
+
+        // Optimize modal position on window resize
+        window.addEventListener('resize', () => {
+            const addModal = document.getElementById('addAssetModal');
+            if (addModal.style.display === 'block') {
+                this.optimizeModalPosition(addModal);
+            }
+        });
     }
 
     // Security Methods
